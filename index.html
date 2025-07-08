@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Traffic Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      body {
-        margin: 0;
-        font-family: sans-serif;
-        background: #f9fafb;
-      }
-      #root {
-        padding: 20px;
-      }
-    </style>
-    <!-- React & Recharts via CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="text/javascript">
+<head>
+  <meta charset="UTF-8" />
+  <title>Traffic Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f9fafb;
+    }
+    #root {
+      padding: 20px;
+    }
+  </style>
+
+  <!-- React & Recharts via CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+  <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    window.onload = function () {
       const { useState, useMemo } = React;
       const {
         LineChart,
@@ -32,7 +35,7 @@
         CartesianGrid,
         Tooltip,
         Legend,
-        ResponsiveContainer
+        ResponsiveContainer,
       } = Recharts;
 
       const TrafficCorrelationDashboard = () => {
@@ -192,6 +195,7 @@
       ReactDOM.createRoot(document.getElementById("root")).render(
         React.createElement(TrafficCorrelationDashboard)
       );
-    </script>
-  </body>
+    };
+  </script>
+</body>
 </html>
