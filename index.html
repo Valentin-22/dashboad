@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Traffic Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #f9fafb;
+      }
+      #root {
+        padding: 20px;
+      }
+    </style>
+    <!-- React & Recharts via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/javascript">
+      const { useState, useMemo } = React;
+      const {
+        LineChart,
+        Line,
+        XAxis,
+        YAxis,
+        CartesianGrid,
+        Tooltip,
+        Legend,
+        ResponsiveContainer
+      } = Recharts;
+
+      const TrafficCorrelationDashboard = () => {
+        const [selectedMetrics, setSelectedMetrics] = useState({
+          impressions: true,
+          clicks: true,
+          signups: true,
+          churn: true,
+          refunds: true,
+          reactivations: true
+        });
+
+        const combinedData = useMemo(() => {
+          const trafficData = [
+            { month: "Aug 2024", clicks: 1813051, impressions: 13431844 },
+            { month: "Sep 2024", clicks: 2490115, impressions: 16192407 },
+            { month: "Oct 2024", clicks: 2678118, impressions: 18686793 },
+            { month: "Nov 2024", clicks: 2650172, impressions: 19213297 },
+            { month: "Dec 2024", clicks: 1591217, impressions: 13603290 },
+            { month: "Jan 2025", clicks: 1406627, impressions: 14986152 },
+            { month: "Feb 2025", clicks: 1339922, impressions: 15582555 },
+            { month: "Mar 2025", clicks: 1869380, impressions: 22851409 },
+            { month: "Apr 2025", clicks: 1817032, impressions: 24420950 },
+            { month: "May 2025", clicks: 1932411, impressions: 27824481 },
+            { month: "Jun 2025", clicks: 1499054, impressions: 21896337 }
+          ];
+
+          const signupsData = [
+            { month: "Aug 2024", signups: 2311 },
+            { month: "Sep 2024", signups: 3365 },
+            { month: "Oct 2024", signups: 4006 },
+            { month: "Nov 2024", signups: 3963 },
+            { month: "Dec 2024", signups: 2898 },
+            { month: "Jan 2025", signups: 2703 },
+            { month: "Feb 2025", signups: 2649 },
+            { month: "Mar 2025", signups: 3263 },
+            { month: "Apr 2025", signups: 3229 },
+            { month: "May 2025", signups: 3296 },
+            { month: "Jun 2025", signups: 2289 }
+          ];
+
+          const churnData = [
+            { month: "Aug 2024", churn: 3136 },
+            { month: "Sep 2024", churn: 3115 },
+            { month: "Oct 2024", churn: 2419 },
+            { month: "Nov 2024", churn: 2701 },
+            { month: "Dec 2024", churn: 3277 },
+            { month: "Jan 2025", churn: 2930 },
+            { month: "Feb 2025", churn: 2530 },
+            { month: "Mar 2025", churn: 2507 },
+            { month: "Apr 2025", churn: 2529 },
+            { month: "May 2025", churn: 2640 },
+            { month: "Jun 2025", churn: 3167 }
+          ];
+
+          const refundsData = [
+            { month: "Aug 2024", refunds: 11691.53 },
+            { month: "Sep 2024", refunds: 29296.9 },
+            { month: "Oct 2024", refunds: 32440.38 },
+            { month: "Nov 2024", refunds: 23568.37 },
+            { month: "Dec 2024", refunds: 21789.08 },
+            { month: "Jan 2025", refunds: 22631.76 },
+            { month: "Feb 2025", refunds: 19222.4 },
+            { month: "Mar 2025", refunds: 18735.3 },
+            { month: "Apr 2025", refunds: 21170.91 },
+            { month: "May 2025", refunds: 19410.61 },
+            { month: "Jun 2025", refunds: 23605.41 }
+          ];
+
+          const reactivationsData = [
+            { month: "Aug 2024", reactivations: 6838.36 },
+            { month: "Sep 2024", reactivations: 8601.95 },
+            { month: "Oct 2024", reactivations: 8079.51 },
+            { month: "Nov 2024", reactivations: 7425.73 },
+            { month: "Dec 2024", reactivations: 5325.65 },
+            { month: "Jan 2025", reactivations: 5917.55 },
+            { month: "Feb 2025", reactivations: 5739.21 },
+            { month: "Mar 2025", reactivations: 6183.12 },
+            { month: "Apr 2025", reactivations: 5812.37 },
+            { month: "May 2025", reactivations: 6317.63 },
+            { month: "Jun 2025", reactivations: 4433.43 }
+          ];
+
+          return trafficData.map((traffic) => {
+            const signup = signupsData.find((s) => s.month === traffic.month);
+            const churn = churnData.find((c) => c.month === traffic.month);
+            const refund = refundsData.find((r) => r.month === traffic.month);
+            const reactivation = reactivationsData.find((r) => r.month === traffic.month);
+
+            return {
+              month: traffic.month,
+              impressions: traffic.impressions / 1000000,
+              clicks: traffic.clicks / 100000,
+              signups: signup?.signups || 0,
+              churn: churn?.churn || 0,
+              refundsScaled: (refund?.refunds || 0) / 10,
+              reactivationsScaled: (reactivation?.reactivations || 0) / 10
+            };
+          });
+        }, []);
+
+        return React.createElement(
+          "div",
+          { style: { width: "100%", height: "500px" } },
+          React.createElement(
+            ResponsiveContainer,
+            { width: "100%", height: "100%" },
+            React.createElement(
+              LineChart,
+              { data: combinedData },
+              React.createElement(CartesianGrid, { strokeDasharray: "3 3" }),
+              React.createElement(XAxis, { dataKey: "month" }),
+              React.createElement(YAxis, null),
+              React.createElement(Tooltip, null),
+              React.createElement(Legend, null),
+              React.createElement(Line, {
+                type: "monotone",
+                dataKey: "impressions",
+                stroke: "#8884d8",
+                strokeWidth: 2
+              }),
+              React.createElement(Line, {
+                type: "monotone",
+                dataKey: "clicks",
+                stroke: "#82ca9d",
+                strokeWidth: 2
+              }),
+              React.createElement(Line, {
+                type: "monotone",
+                dataKey: "signups",
+                stroke: "#ffc658",
+                strokeWidth: 2
+              }),
+              React.createElement(Line, {
+                type: "monotone",
+                dataKey: "churn",
+                stroke: "#ff7300",
+                strokeWidth: 2
+              }),
+              React.createElement(Line, {
+                type: "monotone",
+                dataKey: "refundsScaled",
+                stroke: "#ff0000",
+                strokeWidth: 2
+              }),
+              React.createElement(Line, {
+                type: "monotone",
+                dataKey: "reactivationsScaled",
+                stroke: "#8dd1e1",
+                strokeWidth: 2
+              })
+            )
+          )
+        );
+      };
+
+      ReactDOM.createRoot(document.getElementById("root")).render(
+        React.createElement(TrafficCorrelationDashboard)
+      );
+    </script>
+  </body>
+</html>
